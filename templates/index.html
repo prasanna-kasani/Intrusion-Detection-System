@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intrusion Detection</title>
+
+    <style>
+        body {
+    background-image: url("{{ url_for('static', filename='bgimage.jpg') }}");
+    background-size: cover;
+    background-position: center;
+}
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            background-color: black;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.3);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: white;
+        }
+
+        input[type="text"] {
+            width: calc(100% - 12px);
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background: linear-gradient(45deg, #4CAF50, #00c6ff);
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        input[type="submit"]:hover {
+            opacity: 0.9;
+        }
+
+        .prediction {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .result-box {
+            padding: 15px 25px;
+            border-radius: 10px;
+            display: inline-block;
+            font-size: 20px;
+            font-weight: bold;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        .normal {
+            background-color: #28a745;
+            box-shadow: 0px 0px 15px rgba(0,255,0,0.5);
+        }
+
+        .intrusion {
+            background-color: #dc3545;
+            box-shadow: 0px 0px 15px rgba(255,0,0,0.5);
+        }
+
+        @keyframes fadeIn {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
+    </style>
+</head>
+
+<body>
+
+<h1 style="color:#007bff;">Intrusion Detection</h1>
+
+<form action="{{ url_for('predict') }}" method="POST">
+
+    <label for="rate">Rate:</label>
+    <input type="text" id="rate" name="rate" placeholder="Data transfer rate in packets per second "><br><br>
+    
+    <label for="dttl">DTTL:</label>
+    <input type="text" id="dttl" name="dttl" placeholder="Destination to source time value"><br><br>
+    
+    <label for="dload">DLoad:</label>
+    <input type="text" id="dload" name="dload" placeholder="Destination bits per sec"><br><br>
+    
+    <label for="swin">SWin:</label>
+    <input type="text" id="swin" name="swin" placeholder="Source TCP window value"><br><br>
+    
+    <label for="dwin">DWin:</label>
+    <input type="text" id="dwin" name="dwin" placeholder="Destination TCP window value"><br><br>
+    
+    <label for="ct_srv_src">CT_SRV_SRC:</label>
+    <input type="text" id="ct_srv_src" name="ct_srv_src" placeholder="Connections that contain same service and source address"><br><br>
+    
+    <label for="ct_state_ttl">CT_STATE_TTL:</label>
+    <input type="text" id="ct_state_ttl" name="ct_state_ttl" placeholder="Number for each state"><br><br>
+    
+    <label for="ct_dst_ltm">CT_DST_LTM:</label>
+    <input type="text" id="ct_dst_ltm" name="ct_dst_ltm" placeholder="Connections which contain same destination address"><br><br>
+    
+    <label for="ct_dst_src_ltm">CT_DST_SRC_LTM:</label>
+    <input type="text" id="ct_dst_src_ltm" name="ct_dst_src_ltm" placeholder="Connections that contain same source and destination address"><br><br>
+    
+    <label for="ct_srv_dst">CT_SRV_DST:</label>
+    <input type="text" id="ct_srv_dst" name="ct_srv_dst" placeholder="Connections that contain same service and destination address"><br><br>
+
+    <input type="submit" value="Predict">
+
+</form>
+
+<hr>
+
+<div class="prediction">
+
+{% if prediction_text %}
+
+    {% if prediction_text == "Normal Activity" %}
+        <div class="result-box normal">
+            ✅ {{ prediction_text }}
+        </div>
+
+    {% else %}
+        <div class="result-box intrusion">
+            ⚠️ {{ prediction_text }}
+        </div>
+    {% endif %}
+
+{% endif %}
+
+</div>
+
+</body>
+</html>
